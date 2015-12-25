@@ -57,7 +57,7 @@ public class Ball extends Object2D
 		setVelocity(new Vector(vx, vy));
 	}
 
-	public Ball(double x,double y, double mass, Color color, Vector velocity)
+	public Ball(double x, double y, double mass, Color color, Vector velocity)
 	{
 		super(x, y, true, true);
 		setMass(mass);
@@ -78,12 +78,20 @@ public class Ball extends Object2D
 	public void paint(Graphics g)
 	{
 		g.setColor(color);
-		g.fillOval((int) getX()- radius, (int) getY() - radius, radius * 2, radius * 2);
+		g.fillOval((int) getX() - radius, (int) getY() - radius, radius * 2, radius * 2);
 	}
-	
+
 	@Override
 	public void update(double time)
 	{
+
+		// y = y0 + v0t + .5at^2
+		// x = x0 + v0t
+		// update position
+		double previousY = getY();
+		setY(getY() + velocity.getY() * time + .5 * gravityAcceleration * time * time);
+		setX(getX() + velocity.getX() * time);
+
 		// manage collisions with walls
 		if (getX() + radius > Main.main.getWidth())
 		{
@@ -99,20 +107,25 @@ public class Ball extends Object2D
 		if (getY() + radius > Main.main.getHeight())
 		{
 			setY(Main.main.getHeight() - radius - 1);
-			velocity.setY(-velocity.getY() * coefficientRestitution);
+			// correct velocity with work energy theorem
+			velocity.setY(-Math.sqrt((velocity.getY() * velocity.getY()
+					+ 2 * gravityAcceleration * (Main.main.getHeight() - previousY - radius - 1)))
+					* coefficientRestitution);
 		}
 		else if (getY() - radius < 0)
 		{
 			setY(radius + 1);
-			velocity.setY(-velocity.getY() * coefficientRestitution);
+			// correct velocity with work energy theorem
+			velocity.setY(Math.sqrt((velocity.getY() * velocity.getY()
+					+ 2 * gravityAcceleration * (radius + 1 - previousY) * coefficientRestitution)));
+		}
+		else
+		{
+			// update velocity as pertinent to gravity and time
+			// v = v0 + at
+			velocity.setY(velocity.getY() + gravityAcceleration * time);
 		}
 
-		// update velocity as pertinent to gravity and time
-		velocity.setY(velocity.getY() + gravityAcceleration * time);
-
-		// update position
-		setY(getY() + velocity.getY() * time);
-		setX(getX() + velocity.getX() * time);
 	}
 
 	// Functional Methods
@@ -130,15 +143,6 @@ public class Ball extends Object2D
 
 	public void collision(Ball b)
 	{
-		
-		// store previous velocities; if 0 set them so that the balls will be
-		// moved to adjacent at an angle 135 degrees in reference to the
-		// horizontal
-		double velocityPreviousX1 = velocity.getX() != 0 ? velocity.getX() : 1;
-		double velocityPreviousY1 = velocity.getY() != 0 ? velocity.getY() : 1;
-		double velocityPreviousX2 = b.getVelocity().getX() != 0 ? b.getVelocity().getX() : -1;
-		double velocityPreviousY2 = b.getVelocity().getY() != 0 ? b.getVelocity().getY() : -1;
-
 		// contact angle
 		double phi = Math.atan2(b.getY() - getY(), b.getX() - getX());
 
@@ -172,15 +176,27 @@ public class Ball extends Object2D
 		b.setVelocity(new Vector(v2x, v2y));
 
 		// move balls to new positions at reverse of old velocities
-		double step = .1;
+		boolean zeroVelocity = false;
 		while (CustomMath.distance(getX(), getY(), b.getX(), b.getY()) <= radius + b.getRadius())
 		{
-			setX(getX() - velocityPreviousX1 * step);
-			setY(getY() - velocityPreviousY1 * step);
-			b.setX(b.getX() - velocityPreviousX2 * step);
-			b.setY(b.getY() - velocityPreviousY2 * step);
+			// give balls velocity in opposing directions to move them apart
+			if (velocity.getMagnitude() == 0 && b.getVelocity().getMagnitude() == 0)
+			{
+				velocity = new Vector(1, 135, true);
+				b.setVelocity(new Vector(1, -45, true));
+				zeroVelocity = true;
+			}
+			update(Main.timeScale);
+			b.update(Main.timeScale);
 		}
-		
+
+		// reset velocity if it was zero
+		if (zeroVelocity)
+		{
+			b.setVelocity(new Vector(0, 0));
+			setVelocity(new Vector(0, 0));
+		}
+
 	}
 
 	// Getters and Setters
@@ -207,7 +223,7 @@ public class Ball extends Object2D
 		this.mass = mass;
 		calcRadius();
 	}
-	
+
 	public Color getColor()
 	{
 		return color;
@@ -217,7 +233,7 @@ public class Ball extends Object2D
 	{
 		this.color = color;
 	}
-	
+
 	public Vector getVelocity()
 	{
 		return new Vector(velocity);

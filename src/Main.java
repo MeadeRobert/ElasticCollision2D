@@ -10,6 +10,8 @@ public class Main extends Applet implements Runnable
 {
 	private static final long serialVersionUID = 1118260195664301015L;
 
+	public static final double timeScale = 1.0/12.0;
+
 	public static Main main;
 	private Thread thread = new Thread(this);
 	private Graphics gg;
@@ -33,8 +35,8 @@ public class Main extends Applet implements Runnable
 	@Override
 	public void init()
 	{
-		 balls.add(new Ball(0, height / 2, 25, Color.RED, 50, -50));
-		 balls.add(new Ball(200, 300, 25, Color.GREEN, 50, -50));
+		 balls.add(new Ball(50, height / 2, 25, Color.RED, 5, 20));
+		 balls.add(new Ball(200, 300, 25, Color.GREEN, 5, -5));
 		 balls.add(new Ball(400, 0, 35, new Color(255, 100, 0), 75, -75));
 		 balls.add(new Ball(0, height / 4, 25, Color.CYAN, 50, -50));
 		 balls.add(new Ball(70, height / 3, 25, Color.MAGENTA, 80, 50));
@@ -50,25 +52,26 @@ public class Main extends Applet implements Runnable
 		 Vector(100, Math.acos(Math.sqrt(3) / 2.0))));
 
 //		balls = new ArrayList<Ball>();
-//		double mass = .01;
-//		double maxVelocityXY = 100.0;
-//		for (int i = 0; i < 2000; i++)
+//		double mass = 1;
+//		double maxVelocityXY = 10;
+//		for (int i = 0; i < 20; i++)
 //		{
-//			balls.add(new Ball(Math.random() * width, Math.random() * height, mass, Color.BLUE,
-//					Math.random() * maxVelocityXY - maxVelocityXY, Math.random() * maxVelocityXY - maxVelocityXY));
+//			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
+//					Math.random() * maxVelocityXY - maxVelocityXY));
 //			if (i % 5 == 0)
 //			{
 //				balls.get(i).setColor(Color.RED);
 //			}
 //		}
 
-		World.gravityAcceleration /= 6;
+		World.gravityAcceleration = 0;
 
 		if (main == null)
 		{
 			main = this;
 		}
 		setSize(width, height);
+		setBackground(new Color(0x333333));
 		setBackground(Color.BLACK);
 	}
 
@@ -81,17 +84,23 @@ public class Main extends Applet implements Runnable
 	@Override
 	public void run()
 	{
+		double energyPrevious = 0;
+		double energy = 0;
+		int propagation = 0;
+		boolean calcEnergy = true;
 		while (true)
 		{
 			repaint();
 
-			double energy = 0;
+		
+			
+			energy = 0;
 			for (int i = 0; i < balls.size(); i++)
 			{
-				balls.get(i).update(10.0 / 60.0);
 				energy += .5 * balls.get(i).getMass() * balls.get(i).getVelocity().getMagnitude()
-						* balls.get(i).getVelocity().getMagnitude() + 
-						 balls.get(i).getMass() * World.gravityAcceleration * (height - balls.get(i).getY() + balls.get(i).getRadius());
+						* balls.get(i).getVelocity().getMagnitude()
+						+ balls.get(i).getMass() * (height - balls.get(i).getY()) * World.gravityAcceleration;
+				balls.get(i).update(timeScale);
 				for (int j = i + 1; j < balls.size(); j++)
 				{
 					if (distance(balls.get(i), balls.get(j)) <= balls.get(i).getRadius() + balls.get(j).getRadius())
@@ -100,11 +109,35 @@ public class Main extends Applet implements Runnable
 					}
 				}
 			}
-			System.out.println(energy);
+			
+			// keep track of energy and if it changes by greater than 20% from the original alert the user
+			if(calcEnergy)
+			{
+				energyPrevious = energy;
+				calcEnergy = false;
+			}
+			
+			if ((double) Math.abs(energy - energyPrevious) > energy * .2)
+			{
+				if (propagation > 10)
+				{
+					System.out.println("violation: LAW of conservation of energy");
+					System.out.println(energy);
+					System.out.println(energyPrevious);
+				}
+				else
+				{
+				 propagation++;
+				}
+			}
+			else
+			{
+				propagation--;
+			}
 
 			try
 			{
-				Thread.sleep(1000 / 60);
+				Thread.sleep(1000 / 120);
 			}
 			catch (Exception e)
 			{
