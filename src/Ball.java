@@ -285,8 +285,8 @@ public class Ball extends Object2D
 				b.setVelocity(new Vector2(1, -Math.PI / 4, true));
 				zeroVelocity = true;
 			}
-			update(Main.timeScale);
-			b.update(Main.timeScale);
+			update(Main.timeScale / 100);
+			b.update(Main.timeScale / 100);
 		}
 
 		// reset velocity if it was zero

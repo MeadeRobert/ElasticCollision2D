@@ -73,18 +73,18 @@ public class Main extends Applet implements Runnable
 		balls.add(new Ball(400, 50, 2.0, new Color(0x6666FF), -20, -10));
 		balls.add(new Ball(200, 100, 3.0, new Color(0x008000), new Vector2(100, Math.acos(Math.sqrt(3) / 2.0))));
 
-		balls = new ArrayList<Ball>();
-		double mass = 1;
-		double maxVelocityXY = 50;
-		for (int i = 0; i < 20; i++)
-		{
-			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
-					Math.random() * maxVelocityXY - maxVelocityXY));
-			if (i % 5 == 0)
-			{
-				balls.get(i).setColor(Color.RED);
-			}
-		}
+//		balls = new ArrayList<Ball>();
+//		double mass = 1;
+//		double maxVelocityXY = 50;
+//		for (int i = 0; i < 20; i++)
+//		{
+//			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
+//					Math.random() * maxVelocityXY - maxVelocityXY));
+//			if (i % 5 == 0)
+//			{
+//				balls.get(i).setColor(Color.RED);
+//			}
+//		}
 
 		World2D.gravityAcceleration = 0;
 
