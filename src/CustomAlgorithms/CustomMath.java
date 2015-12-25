@@ -2,14 +2,15 @@ package CustomAlgorithms;
 
 /**
  * A custom math class for miscellaneous purposes.
- * @author Robert Meade
+ * @author Robert James Meade
+ * @version 0.1
  */
 public class CustomMath
 {
 
 	/**
 	 * A for-loop implementation of the isPrime method.
-	 * @param n
+	 * @param n number
 	 * @return isPrime
 	 */
 	public static boolean isPrime(int n)
@@ -37,7 +38,7 @@ public class CustomMath
 
 	/**
 	 * A recursive implementation of the isPrime method.
-	 * @param n
+	 * @param n number
 	 * @param i Counter; must start at a value of 2 to function properly
 	 * @return isPrime
 	 */
