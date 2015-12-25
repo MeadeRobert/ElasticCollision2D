@@ -66,8 +66,8 @@ public class Main extends Applet implements Runnable
 		balls.add(new Ball(70, height / 3, 25, Color.MAGENTA, 80, 50));
 		balls.add(new Ball(60, 25, 1.5, new Color(90, 0, 130), 80, 50));
 		balls.add(new Ball(60, 25, 1.5, new Color(255, 0, 170), -80, -50));
-//		balls.add(new Ball(width / 2, height / 2, 1.5, new Color(0xD1111A), 0, 0));
-//		balls.add(new Ball(width / 2, height / 2, 1.5, Color.BLUE, 0, 0));
+		balls.add(new Ball(width / 2, height / 2, 1.5, new Color(0xD1111A), 0, 0));
+		balls.add(new Ball(width / 2, height / 2, 1.5, Color.BLUE, 0, 0));
 		balls.add(new Ball(500, 200, .75, new Color(0xFFFF00), 10, 10));
 		balls.add(new Ball(100, 300, 1.25, Color.ORANGE, 20, 10));
 		balls.add(new Ball(400, 50, 2.0, new Color(0x6666FF), -20, -10));
@@ -87,7 +87,7 @@ public class Main extends Applet implements Runnable
 		// }
 		// }
 
-		World2D.gravityAcceleration = 9.81;
+		World2D.gravityAcceleration = 0;
 
 		if (main == null)
 		{
@@ -128,13 +128,11 @@ public class Main extends Applet implements Runnable
 				{
 					if (distance(balls.get(i), balls.get(j)) <= balls.get(i).getRadius() + balls.get(j).getRadius())
 					{
-						System.out.println("hello");
 						balls.get(i).collision(balls.get(j));
-						
+
 					}
 				}
 			}
-			System.out.println(energy);
 
 			// keep track of energy and if it changes by greater than 20% from
 			// the original alert the user

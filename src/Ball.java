@@ -278,10 +278,11 @@ public class Ball extends Object2D
 		while (CustomMath.distance(getX(), getY(), b.getX(), b.getY()) <= radius + b.getRadius())
 		{
 			// give balls velocity in opposing directions to move them apart
-			if (velocity.getMagnitude() == 0 && b.getVelocity().getMagnitude() == 0)
+			if (Math.abs(velocity.getMagnitude()- b.getVelocity().getMagnitude()) < 1 && Math.abs(velocity.getAngle() - b.getVelocity().getAngle()) < 1)
 			{
-				velocity = new Vector2(1, 135, true);
-				b.setVelocity(new Vector2(1, -45, true));
+				
+				velocity = new Vector2(1, 3 *Math.PI / 4, true);
+				b.setVelocity(new Vector2(1, -Math.PI / 4, true));
 				zeroVelocity = true;
 			}
 			update(Main.timeScale);

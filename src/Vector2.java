@@ -54,6 +54,15 @@ public class Vector2
 		setX(Math.cos(angle) * magnitude);
 	}
 
+	// Overridden methods
+	// ------------------------------------------------------------------
+	
+	@Override
+	public String toString()
+	{
+		return magnitude + " | " + angle + " radians";
+	}
+	
 	// Getters and Setters
 	// ------------------------------------------------------------------
 
