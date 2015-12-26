@@ -80,21 +80,20 @@ public class Main extends Applet implements Runnable
 		balls.add(new Ball(400, 50, 2.0, new Color(0x6666FF), -20, -10));
 		balls.add(new Ball(200, 100, 3.0, new Color(0x008000), new Vector2(100, Math.acos(Math.sqrt(3) / 2.0))));
 
-		// balls = new ArrayList<Ball>();
-		// double mass = 1;
-		// double maxVelocityXY = 5;
-		// for (int i = 0; i < 20; i++)
-		// {
-		// balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE,
-		// Math.random() * maxVelocityXY - maxVelocityXY,
-		// Math.random() * maxVelocityXY - maxVelocityXY));
-		// if (i % 5 == 0)
-		// {
-		// balls.get(i).setColor(Color.RED);
-		// }
-		// }
+		balls = new ArrayList<Ball>();
+		double mass = .01;
+		double maxVelocityXY = 50;
+		for (int i = 0; i < 1000; i++)
+		{
+			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
+					Math.random() * maxVelocityXY - maxVelocityXY));
+			if (i % 5 == 0)
+			{
+				balls.get(i).setColor(Color.RED);
+			}
+		}
 
-		World2D.gravityAcceleration = 0;
+		World2D.gravityAcceleration = 9.81;
 
 		if (main == null)
 		{
@@ -150,7 +149,7 @@ public class Main extends Applet implements Runnable
 
 			
 			// correct energy in system if applicable
-			if (correctEnergyLoss && (double) Math.abs(energyStart - energyCurrent) > energyStart * .1)
+			if (correctEnergyLoss && energyStart - energyCurrent > energyStart * .1)
 			{
 				cleanUpEnergy();
 			}
@@ -217,10 +216,9 @@ public class Main extends Applet implements Runnable
 	 */
 	public void cleanUpEnergy()
 	{
-		double multiplier = 1.0001;
+		double multiplier = 1.1;
 		while (energyStart > energyCurrent)
 		{
-			System.out.println("making correction");
 			energyCurrent = 0;
 			for (int i = 0; i < balls.size(); i++)
 			{
