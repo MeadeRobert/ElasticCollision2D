@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.io.Serializable;
 
 /**
  * The abstract Object2D class provides parameters for objects that will exist in a 2D world.
@@ -6,12 +7,14 @@ import java.awt.Graphics;
  * @version %I% %G%
  * @see World2D
  */
-public abstract class Object2D extends World2D
+public abstract class Object2D implements Serializable
 {
+	/** serial version id **/
+	private static final long serialVersionUID = 7307504985193527867L;
 	/** x position of object **/
-	private double x = 0;
+	private double x = 0.0;
 	/** y position of object **/
-	private double y = 0;
+	private double y = 0.0;
 	
 	/** whether or not gravity affects the object **/
 	private boolean gravity = false;

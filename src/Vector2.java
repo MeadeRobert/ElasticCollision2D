@@ -1,11 +1,16 @@
+import java.io.Serializable;
+
 /**
  * The Vector2 class provides an object to represent 2 dimensional vector
  * quantity and changes to aspects of the object.
  * @author Robert James Meade
  * @version %I% %G%
  */
-public class Vector2
+public class Vector2 implements Serializable
 {
+	
+	/** Serial version id **/
+	private static final long serialVersionUID = 2602056528294161826L;
 	/** Magnitude of the vector **/
 	private double magnitude = 0.0;
 	/** Angle of the vector (direction) **/

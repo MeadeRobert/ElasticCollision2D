@@ -1,5 +1,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.File;
+import java.io.FileWriter;
+
 import CustomAlgorithms.CustomMath;
 
 /**
@@ -11,6 +14,10 @@ import CustomAlgorithms.CustomMath;
  */
 public class Ball extends Object2D
 {
+
+	/** serial version id **/
+	private static final long serialVersionUID = -570084700155576287L;
+
 	/** ratio of mass to area for the ball **/
 	private static double massToArea = 1 / (25 * 25 * Math.PI);
 
@@ -22,7 +29,7 @@ public class Ball extends Object2D
 	/** Color of the ball **/
 	private Color color = Color.BLACK;
 	/** radius of the ball (proportional to mass) **/
-	private int radius = 0;
+	private double radius = 0;
 	/** mass of the ball (proportional to radius) **/
 	private double mass = 1;
 	/**
@@ -102,7 +109,7 @@ public class Ball extends Object2D
 		setColor(color);
 		setVelocity(velocity);
 	}
-	
+
 	/**
 	 * 5-Argument Ball Constructor
 	 * @param x x position of ball
@@ -160,7 +167,7 @@ public class Ball extends Object2D
 	public void paint(Graphics g)
 	{
 		g.setColor(color);
-		g.fillOval((int) getX() - radius, (int) getY() - radius, radius * 2, radius * 2);
+		g.fillOval((int) (getX() - radius), (int) (getY() - radius), (int) radius * 2, (int) radius * 2);
 	}
 
 	@Override
@@ -170,7 +177,8 @@ public class Ball extends Object2D
 		// x = x0 + v0t
 		// update position
 		double previousY = getY();
-		setY(getY() + velocity.getY() * time + .5 * gravityAcceleration * time * time);
+		double velocityPreviousY = velocity.getY();
+		setY(getY() + velocity.getY() * time + .5 * World2D.gravityAcceleration * time * time);
 		setX(getX() + velocity.getX() * time);
 
 		// check collision with left or right
@@ -192,7 +200,14 @@ public class Ball extends Object2D
 			// correct velocity with work energy theorem
 			// v =( v0 ^ 2 + 2 a deltaX) ^ (1/2)
 			velocity.setY(-Math.sqrt((velocity.getY() * velocity.getY()
-					+ 2 * gravityAcceleration * (Main.main.getHeight() - previousY - radius - 1))) * restitution);
+					+ 2 * World2D.gravityAcceleration * (Main.main.getHeight() - previousY - radius - 1)))
+					* restitution);
+			
+			// correct non-real result
+			if(Double.isNaN(velocity.getY()))
+			{
+				velocity.setY(-velocityPreviousY);
+			}
 		}
 		else if (getY() - radius < 0)
 		{
@@ -200,15 +215,14 @@ public class Ball extends Object2D
 			// correct velocity with work energy theorem
 			// v =( v0 ^ 2 + 2 a deltaX) ^ (1/2)
 			velocity.setY(Math.sqrt((velocity.getY() * velocity.getY()
-					+ 2 * gravityAcceleration * (radius + 1 - previousY) * restitution)));
+					+ 2 * World2D.gravityAcceleration * (radius + 1 - previousY) * restitution)));
 		}
 		else
 		{
 			// update velocity as pertinent to gravity and time
 			// v = v0 + at
-			velocity.setY(velocity.getY() + gravityAcceleration * time);
+			velocity.setY(velocity.getY() + World2D.gravityAcceleration * time);
 		}
-
 	}
 
 	// Functional Methods
@@ -269,6 +283,11 @@ public class Ball extends Object2D
 		double v2y = (((v2 * Math.cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * Math.cos(theta1 - phi)) / (m2 + m1))
 				* Math.sin(phi)) + v2 * Math.sin(theta2 - phi) * Math.sin(phi + Math.PI / 2.0);
 
+		if (Double.isNaN(v1x) || Double.isNaN(v1y) || Double.isNaN(v2x) || Double.isNaN(v2y))
+		{
+			System.out.println("collision gave undefined result");
+		}
+
 		// set new velocities
 		velocity = new Vector2(v1x, v1y);
 		b.setVelocity(new Vector2(v2x, v2y));
@@ -278,10 +297,11 @@ public class Ball extends Object2D
 		while (CustomMath.distance(getX(), getY(), b.getX(), b.getY()) <= radius + b.getRadius())
 		{
 			// give balls velocity in opposing directions to move them apart
-			if (Math.abs(velocity.getMagnitude()- b.getVelocity().getMagnitude()) < 1 && Math.abs(velocity.getAngle() - b.getVelocity().getAngle()) < 1)
+			if (Math.abs(velocity.getMagnitude() - b.getVelocity().getMagnitude()) < 1
+					&& Math.abs(velocity.getAngle() - b.getVelocity().getAngle()) < 1)
 			{
-				
-				velocity = new Vector2(1, 3 *Math.PI / 4, true);
+
+				velocity = new Vector2(1, 3 * Math.PI / 4, true);
 				b.setVelocity(new Vector2(1, -Math.PI / 4, true));
 				zeroVelocity = true;
 			}
@@ -298,6 +318,35 @@ public class Ball extends Object2D
 
 	}
 
+	private static int count = 0;
+	private File file = new File(".." + File.separator + "res" + File.separator + "ball" + (count++) + ".log");
+	private boolean createNew = true;
+
+	public void log(int interval)
+	{
+		try
+		{
+			if (file.exists())
+			{
+				file.createNewFile();
+			}
+			if (createNew)
+			{
+				file.delete();
+				file.createNewFile();
+				createNew = false;
+			}
+			FileWriter writer = (new FileWriter(file, true));
+			writer.write(interval + "\n" + velocity + "\n" + "{" + getX() + " , " + getY() + "}\n\n");
+			writer.close();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Working Directory = " + System.getProperty("user.dir"));
+			System.out.println(".." + File.separator + "res" + File.separator + "ball" + (count) + ".log");
+		}
+	}
+
 	// Getters and Setters
 	// ----------------------------------------------------------------------
 
@@ -305,7 +354,7 @@ public class Ball extends Object2D
 	 * The getRadius method gets the radius of the ball.
 	 * @return radius of ball
 	 */
-	public int getRadius()
+	public double getRadius()
 	{
 		return radius;
 	}
@@ -315,7 +364,7 @@ public class Ball extends Object2D
 	 * mass accordingly.
 	 * @param radius radius of ball
 	 */
-	public void setRadius(int radius)
+	public void setRadius(double radius)
 	{
 		this.radius = radius;
 		calcMass();
