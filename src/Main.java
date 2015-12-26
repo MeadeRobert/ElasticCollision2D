@@ -102,7 +102,7 @@ public class Main extends Applet implements Runnable
 			}
 		}
 
-		World2D.gravityAcceleration = 9.81;
+		World2D.gravityAcceleration = -9.81;
 
 		if (main == null)
 		{

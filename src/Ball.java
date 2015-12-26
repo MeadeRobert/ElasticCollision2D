@@ -202,9 +202,9 @@ public class Ball extends Object2D
 			velocity.setY(-Math.sqrt((velocity.getY() * velocity.getY()
 					+ 2 * World2D.gravityAcceleration * (Main.main.getHeight() - previousY - radius - 1)))
 					* restitution);
-			
+
 			// correct non-real result
-			if(Double.isNaN(velocity.getY()))
+			if (Double.isNaN(velocity.getY()))
 			{
 				velocity.setY(-velocityPreviousY);
 			}
@@ -216,6 +216,12 @@ public class Ball extends Object2D
 			// v =( v0 ^ 2 + 2 a deltaX) ^ (1/2)
 			velocity.setY(Math.sqrt((velocity.getY() * velocity.getY()
 					+ 2 * World2D.gravityAcceleration * (radius + 1 - previousY) * restitution)));
+
+			// correct non-real result
+			if (Double.isNaN(velocity.getY()))
+			{
+				velocity.setY(-velocityPreviousY);
+			}
 		}
 		else
 		{
@@ -282,11 +288,6 @@ public class Ball extends Object2D
 				* Math.cos(phi)) + v2 * Math.sin(theta2 - phi) * Math.cos(phi + Math.PI / 2.0);
 		double v2y = (((v2 * Math.cos(theta2 - phi) * (m2 - m1) + 2 * m1 * v1 * Math.cos(theta1 - phi)) / (m2 + m1))
 				* Math.sin(phi)) + v2 * Math.sin(theta2 - phi) * Math.sin(phi + Math.PI / 2.0);
-
-		if (Double.isNaN(v1x) || Double.isNaN(v1y) || Double.isNaN(v2x) || Double.isNaN(v2y))
-		{
-			System.out.println("collision gave undefined result");
-		}
 
 		// set new velocities
 		velocity = new Vector2(v1x, v1y);
