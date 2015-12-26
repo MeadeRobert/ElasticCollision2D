@@ -80,18 +80,18 @@ public class Main extends Applet implements Runnable
 		balls.add(new Ball(400, 50, 2.0, new Color(0x6666FF), -20, -10));
 		balls.add(new Ball(200, 100, 3.0, new Color(0x008000), new Vector2(100, Math.acos(Math.sqrt(3) / 2.0))));
 
-		balls = new ArrayList<Ball>();
-		double mass = .01;
-		double maxVelocityXY = 50;
-		for (int i = 0; i < 1000; i++)
-		{
-			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
-					Math.random() * maxVelocityXY - maxVelocityXY));
-			if (i % 5 == 0)
-			{
-				balls.get(i).setColor(Color.RED);
-			}
-		}
+//		balls = new ArrayList<Ball>();
+//		double mass = .01;
+//		double maxVelocityXY = 50;
+//		for (int i = 0; i < 1000; i++)
+//		{
+//			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
+//					Math.random() * maxVelocityXY - maxVelocityXY));
+//			if (i % 5 == 0)
+//			{
+//				balls.get(i).setColor(Color.RED);
+//			}
+//		}
 
 		World2D.gravityAcceleration = 9.81;
 
@@ -151,13 +151,16 @@ public class Main extends Applet implements Runnable
 			// correct energy in system if applicable
 			if (correctEnergyLoss && energyStart - energyCurrent > energyStart * .1)
 			{
-				cleanUpEnergy();
+				adjustUpEnergy();
+			} else if (correctEnergyLoss && energyStart - energyCurrent < energyStart * .9)
+			{
+				adjustDownEnergy();
 			}
 
 			// sleep for rest of frame time
 			try
 			{
-				Thread.sleep(frameRate);
+				//Thread.sleep(frameRate);
 			}
 			catch (Exception e)
 			{
@@ -210,14 +213,39 @@ public class Main extends Applet implements Runnable
 	// ----------------------------------------------------------------------------
 
 	/**
-	 * The cleanUpEnergy method maintains conservation of energy in the face of
+	 * The adjustUpEnergy method maintains conservation of energy in the face of
 	 * energy loss resulting from rounding errors and faulty collision
 	 * detection.
 	 */
-	public void cleanUpEnergy()
+	public void adjustUpEnergy()
 	{
-		double multiplier = 1.1;
+		double multiplier = 1.001;
 		while (energyStart > energyCurrent)
+		{
+			energyCurrent = 0;
+			for (int i = 0; i < balls.size(); i++)
+			{
+				// update velocity
+				balls.get(i).setVelocity(new Vector2(balls.get(i).getVelocity().getX() * multiplier,
+						balls.get(i).getVelocity().getY() * multiplier));
+
+				// calculate new energy
+				energyCurrent += .5 * balls.get(i).getMass() * balls.get(i).getVelocity().getMagnitude()
+						* balls.get(i).getVelocity().getMagnitude()
+						+ balls.get(i).getMass() * (height - balls.get(i).getY()) * World2D.gravityAcceleration;
+			}
+		}
+	}
+	
+	/**
+	 * The adjustUpEnergy method maintains conservation of energy in the face of
+	 * energy gain resulting from rounding errors and faulty collision
+	 * detection.
+	 */
+	public void adjustDownEnergy()
+	{
+		double multiplier = .999;
+		while (energyStart < energyCurrent)
 		{
 			energyCurrent = 0;
 			for (int i = 0; i < balls.size(); i++)
