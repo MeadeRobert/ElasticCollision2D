@@ -199,8 +199,8 @@ public class Ball extends Object2D
 			setY(Main.main.getHeight() - radius - 1);
 			// correct velocity with work energy theorem
 			// v =( v0 ^ 2 + 2 a deltaX) ^ (1/2)
-			velocity.setY(-Math.sqrt((velocity.getY() * velocity.getY()
-					+ 2 * World2D.gravityAcceleration * (Main.main.getHeight() - previousY - radius - 1)))
+			velocity.setY(-Math.sqrt(velocity.getY() * velocity.getY()
+					+ 2 * World2D.gravityAcceleration * (Main.main.getHeight() - previousY - radius - 1))
 					* restitution);
 
 			// correct non-real result
@@ -214,8 +214,8 @@ public class Ball extends Object2D
 			setY(radius + 1);
 			// correct velocity with work energy theorem
 			// v =( v0 ^ 2 + 2 a deltaX) ^ (1/2)
-			velocity.setY(Math.sqrt((velocity.getY() * velocity.getY()
-					+ 2 * World2D.gravityAcceleration * (radius + 1 - previousY) * restitution)));
+			velocity.setY(Math.sqrt(velocity.getY() * velocity.getY()
+					+ 2 * World2D.gravityAcceleration * (radius + 1 - previousY) * restitution));
 
 			// correct non-real result
 			if (Double.isNaN(velocity.getY()))

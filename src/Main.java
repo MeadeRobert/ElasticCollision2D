@@ -82,12 +82,12 @@ public class Main extends Applet implements Runnable
 
 		balls = new ArrayList<Ball>();
 		double mass = .01;
-		double maxVelocityXY = 50;
+		double maxVelocityXY = 100;
 		for (int i = 0; i < 1000; i++)
 		{
 			if(i < 780)
 			{
-			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
+			balls.add(new Ball(0, 0, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
 					Math.random() * maxVelocityXY - maxVelocityXY));
 			}
 			else if (i < 990)
@@ -97,12 +97,12 @@ public class Main extends Applet implements Runnable
 			}
 			else
 			{
-				balls.add(new Ball(width / 2, height / 2, mass, Color.GREEN, Math.random() * maxVelocityXY - maxVelocityXY,
+				balls.add(new Ball(width, height, mass, Color.GREEN, Math.random() * maxVelocityXY - maxVelocityXY,
 						Math.random() * maxVelocityXY - maxVelocityXY));
 			}
 		}
 
-		World2D.gravityAcceleration = -9.81;
+		World2D.gravityAcceleration = 0;
 
 		if (main == null)
 		{
@@ -137,14 +137,14 @@ public class Main extends Applet implements Runnable
 		while (true)
 		{
 			repaint();
-
+			
 			energyCurrent = 0;
 			for (int i = 0; i < balls.size(); i++)
 			{
 				energyCurrent += .5 * balls.get(i).getMass() * balls.get(i).getVelocity().getMagnitude()
 						* balls.get(i).getVelocity().getMagnitude()
 						+ balls.get(i).getMass() * (height - balls.get(i).getY()) * World2D.gravityAcceleration;
-				balls.get(i).update(1.0 / 12.0);
+				balls.get(i).update(timeScale);
 
 				for (int j = i + 1; j < balls.size(); j++)
 				{
@@ -154,12 +154,13 @@ public class Main extends Applet implements Runnable
 					}
 				}
 			}
+			System.out.println(energyStart + " | " + energyCurrent);
 			
 			// correct energy in system if applicable
-			if (correctEnergyLoss && energyStart - energyCurrent > energyStart * .1)
+			if (correctEnergyLoss && energyStart - energyCurrent > energyStart * .05)
 			{
 				adjustUpEnergy();
-			} else if (correctEnergyLoss && energyStart - energyCurrent < energyStart * .9)
+			} else if (correctEnergyLoss && energyStart - energyCurrent < energyStart * .95)
 			{
 				adjustDownEnergy();
 			}
