@@ -154,7 +154,6 @@ public class Main extends Applet implements Runnable
 					}
 				}
 			}
-			System.out.println(energyStart + " | " + energyCurrent);
 			
 			// correct energy in system if applicable
 			if (correctEnergyLoss && energyStart - energyCurrent > energyStart * .05)
