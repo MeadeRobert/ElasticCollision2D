@@ -238,7 +238,7 @@ public class Main extends Applet implements Runnable
 	}
 	
 	/**
-	 * The adjustUpEnergy method maintains conservation of energy in the face of
+	 * The adjustDownEnergy method maintains conservation of energy in the face of
 	 * energy gain resulting from rounding errors and faulty collision
 	 * detection.
 	 */
