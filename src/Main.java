@@ -85,11 +85,20 @@ public class Main extends Applet implements Runnable
 		double maxVelocityXY = 50;
 		for (int i = 0; i < 1000; i++)
 		{
+			if(i < 780)
+			{
 			balls.add(new Ball(width / 2, height / 2, mass, Color.BLUE, Math.random() * maxVelocityXY - maxVelocityXY,
 					Math.random() * maxVelocityXY - maxVelocityXY));
-			if (i % 5 == 0)
+			}
+			else if (i < 990)
 			{
-				balls.get(i).setColor(Color.RED);
+				balls.add(new Ball(width / 2, height / 2, mass, Color.RED, Math.random() * maxVelocityXY - maxVelocityXY,
+						Math.random() * maxVelocityXY - maxVelocityXY));
+			}
+			else
+			{
+				balls.add(new Ball(width / 2, height / 2, mass, Color.GREEN, Math.random() * maxVelocityXY - maxVelocityXY,
+						Math.random() * maxVelocityXY - maxVelocityXY));
 			}
 		}
 
@@ -145,8 +154,6 @@ public class Main extends Applet implements Runnable
 					}
 				}
 			}
-			System.out.println(energyStart + " | " + energyCurrent);
-
 			
 			// correct energy in system if applicable
 			if (correctEnergyLoss && energyStart - energyCurrent > energyStart * .1)
