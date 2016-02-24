@@ -4,10 +4,10 @@ import java.io.Serializable;
 /**
  * The abstract Object2D class provides parameters for objects that will exist in a 2D world.
  * @author Robert James MEade
- * @version %I% %G%
+ * @version 0.1
  * @see World2D
  */
-public abstract class Object2D implements Serializable
+public abstract class Sprite2D implements Serializable
 {
 	/** serial version id **/
 	private static final long serialVersionUID = 7307504985193527867L;
@@ -27,7 +27,7 @@ public abstract class Object2D implements Serializable
 	/**
 	 * No-Argument Object2D Constructor
 	 */
-	public Object2D()
+	public Sprite2D()
 	{
 	}
 	
@@ -35,7 +35,7 @@ public abstract class Object2D implements Serializable
 	 * Copy Object2D Constructor
 	 * @param o Object2D to copy
 	 */
-	public Object2D(Object2D o)
+	public Sprite2D(Sprite2D o)
 	{
 		setX(o.getX());
 		setY(o.getY());
@@ -48,7 +48,7 @@ public abstract class Object2D implements Serializable
 	 * @param x x position of object
 	 * @param y y position of object
 	 */
-	public Object2D(double x, double y)
+	public Sprite2D(double x, double y)
 	{
 		setX(x);
 		setY(y);
@@ -59,7 +59,7 @@ public abstract class Object2D implements Serializable
 	 * @param gravity is affected by gravity?
 	 * @param movable is movable?
 	 */
-	public Object2D(boolean gravity, boolean movable)
+	public Sprite2D(boolean gravity, boolean movable)
 	{
 		setGravity(gravity);
 		setMovable(movable);
@@ -72,7 +72,7 @@ public abstract class Object2D implements Serializable
 	 * @param gravity is affected by gravity?
 	 * @param movable is movable?
 	 */
-	public Object2D(double x, double y, boolean gravity, boolean movable)
+	public Sprite2D(double x, double y, boolean gravity, boolean movable)
 	{
 		setGravity(gravity);
 		setMovable(movable);

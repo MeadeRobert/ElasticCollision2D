@@ -4,7 +4,7 @@ import java.io.Serializable;
  * The Vector2 class provides an object to represent 2 dimensional vector
  * quantity and changes to aspects of the object.
  * @author Robert James Meade
- * @version %I% %G%
+ * @version 0.1
  */
 public class Vector2 implements Serializable
 {
